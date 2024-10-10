@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Login from './components/Login';
+import Register from './components/Register';
+import AdminCompanies from './components/AdminCompanies';
+import UserCompanies from './components/UserCompanies';
+import CreateCompany from './components/CreateCompany';
+import EditCompany from './components/EditCompany';
+import ProtectedRoute from './ProtectedRoute';
+import Navbar from './components/Navbar';
 
 function App() {
+  const location = useLocation(); // Get the current location
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {/* Render Navbar only on routes other than Login and Register */}
+      {location.pathname !== '/' && location.pathname !== '/register' && <Navbar />}
+
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/create-company" element={<CreateCompany />} />
+        <Route path="/user" element={<ProtectedRoute><UserCompanies /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminCompanies /></ProtectedRoute>} />
+        <Route path="/company/edit/:id" element={<ProtectedRoute><EditCompany /></ProtectedRoute>} />
+      </Routes>
     </div>
   );
 }
 
-export default App;
+// Wrap App with Router
+const MainApp = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default MainApp;
